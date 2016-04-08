@@ -1,1 +1,152 @@
-Hello World
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+   <head>
+      <meta charset="UTF-8" />
+      <title>A date range picker for Bootstrap</title>
+      <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" type="text/css" media="all" href="https://raw.githack.com/JaapMoolenaar/bootstrap-daterangepicker/master/daterangepicker.css" />
+      <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+      <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="https://raw.githack.com/JaapMoolenaar/bootstrap-daterangepicker/master/moment.js"></script>
+      <script type="text/javascript" src="https://raw.githack.com/JaapMoolenaar/bootstrap-daterangepicker/master/daterangepicker.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+   </head>
+   <body style="margin: 60px 0">
+        <div class="container">
+            <h2>Date Range Picker "selectPastInvalidDate" demonstrations</h2>
+            
+            <h4>Single invalid date</h4>
+            <p class="text-muted">Using today as an invalid date. When selecting a day before today, you should not be able to select past today.</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" id="invalidtoday" class="form-control">
+                        <div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+
+            <script type="text/javascript">
+            $(document).ready(function() {
+              $('#invalidtoday').daterangepicker({
+                  selectPastInvalidDate: false,
+                  isInvalidDate: function(date) {
+                      return date.format('DD-MM-YYYY') == moment().format('DD-MM-YYYY');
+                  }
+              }, function(start, end, label) {
+                console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+              });
+            });
+            </script>
+
+            <h4>Multiple invalid dates</h4>
+            <p class="text-muted">Using today and today + 7 days as invalid dates. When selecting a day before today, you should not be able to select past today. <br>When selecting a day between today and next week, you should not be able to select past next week.</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" id="invalidtodaynextweek" class="form-control">
+                        <div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+            $(document).ready(function() {
+              $('#invalidtodaynextweek').daterangepicker({
+                  selectPastInvalidDate: false,
+                  isInvalidDate: function(date) {
+                      return date.format('DD-MM-YYYY') == moment().format('DD-MM-YYYY') || date.format('DD-MM-YYYY') == moment().add(7, 'days').format('DD-MM-YYYY');
+                  }
+              }, function(start, end, label) {
+                console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+              });
+            });
+            </script>
+            
+            <h4>Custom classnames</h4>
+            <p class="text-muted">A few dates have custom classes</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" id="customclasses" class="form-control">
+                        <div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <p class="legend"><span class="bookedlegend"></span> Booked</p>
+                </div>
+            </div>
+            <style type="text/css">
+                .daterangepicker td.turnoverin,
+                .daterangepicker td.turnoverout,
+                .daterangepicker td.booked {
+                    color: #fff;
+                    text-decoration: none;
+                }
+                .daterangepicker td.turnoverin {
+                    background: linear-gradient(to right bottom, #fff 25%, #C390D4 26%);
+                }
+                .daterangepicker td.turnoverout {
+                    background: linear-gradient(to left top, #fff 25%, #C390D4 26%);
+                }
+                .daterangepicker td.booked {
+                    background: #C390D4;
+                }
+                .legend {
+                    line-height: 2.2em;
+                }
+                span.bookedlegend {
+                    background: #C390D4;
+                    display: inline-block;
+                    width: 15px;
+                    height: 15px;
+                    margin-top: -2px;
+                    border-radius: 50%;
+                    vertical-align: middle;
+                }
+            </style>
+            <script type="text/javascript">
+            $(document).ready(function() {
+              var bookStart = moment().add(3, 'days'),
+                  bookEnd = moment().add(10, 'days');
+                
+              $('#customclasses').daterangepicker({
+                  selectPastInvalidDate: false,
+                  isInvalidDate: function(date) {
+                      if(date.format('DD-MM-YYYY') == bookStart.format('DD-MM-YYYY'))
+                          return true;
+                      
+                      if(date.format('DD-MM-YYYY') == bookEnd.format('DD-MM-YYYY'))
+                          return true;
+                      
+                      if(date.isAfter(bookStart) && date.isBefore(bookEnd))
+                          return true;
+                          
+                      return false;
+                  },
+                  customDateClassname: function(date) {
+                      if(date.format('DD-MM-YYYY') == bookStart.format('DD-MM-YYYY'))
+                          return 'turnoverin';
+
+                      if(date.format('DD-MM-YYYY') == bookEnd.format('DD-MM-YYYY'))
+                          return 'turnoverout';
+
+                      if(date.isAfter(bookStart) && date.isBefore(bookEnd))
+                          return 'booked';
+                          
+                      return false;
+                  }
+              }, function(start, end, label) {
+                console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+              });
+            });
+            </script>
+        </div>
+   </body>
+</html>
